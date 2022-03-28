@@ -9,12 +9,12 @@ They both use a changing factor known to both server and client to generate uniq
 
 ## Getting Started
 1. Pull/clone the repo locally
-2. Rename/copy keysSAMPLE.js to keys.js
+2. Rename/copy `keysSAMPLE.js` to `keys.js`
 3. Put your account and secret into the file as specified in the comments at top of file
 	- If you are getting the data from a QR code make sure to set `isBase32` to true
 	- Remember to use the correct type of HOTP or TOTP. This will be specified in a qr code's data
 	- See [github.com/google/google-authenticator/wiki/Key-Uri-Format](https://github.com/google/google-authenticator/wiki/Key-Uri-Format) for details on a QR code's URI format.
-4. Open index.html in a web browser (using the file:// interface)
+4. Open index.html in a web browser (using the `file://` interface)
 
 You should now see your OTP codes on the page
 
