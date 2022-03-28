@@ -1,0 +1,67 @@
+<html>
+<!-- HTML & JS based 2 factor authenticator supporting the TOTP standard-->
+<head>
+	<script type="text/javascript" src="sha.js"></script>
+	<script type="text/javascript" src="totp.js"></script>
+	<title>Web Authenticator</title>
+	<style>
+		body {
+			font-family: Arial, Helvetica, Sans-serif;
+			background-color: #F0F0F0;
+		}
+
+		.authString {
+			background-color: FFFFFF;
+			margin: 10px auto;
+			padding: 5px;
+			max-width: 600px;
+			text-align: center;
+
+			width: 100%;
+		}
+
+		.authString span.title {
+			color: #666666;
+		}
+
+		.authString span.code {
+			color: #3388ff;
+			font-size: 30pt;
+			text-align: center;
+		}
+	</style>
+
+</head>
+
+<body>
+	<h1>Web Authenticator</h1>
+	<button onclick="generate()">Reload Codes</button>
+	<div id="authSites" class="">
+		<div id="authString" class="authString" data-account="gov"></div>
+		<div id="authString" class="authString" data-account="test"></div>
+	</div>
+	<script>
+		//Dictionary of shared secrets for each account
+		var dict = {
+			test1: "testt",
+			test: "MSGFS",
+			test2: "MS12GFS"
+			// etc.
+		};
+		generate();
+
+		function generate() {
+			var elements = document.getElementById("authSites").getElementsByTagName('div');
+			//Generate and insert for each site
+			for (var i = 0; i < elements.length; i++) {
+				var site = elements[i].dataset.account;
+				var totpObj = new TOTP();
+				var otp = totpObj.getOTP(dict[site]);
+				elements[i].innerHTML = '<span class="code">' + otp + '</span> <br> <span class="title">' + site + '</span>';
+			}
+		}
+
+	</script>
+</body>
+
+</html>
