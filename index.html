@@ -1,5 +1,6 @@
 <html>
 <!-- HTML & JS based 2 factor authenticator supporting the TOTP standard-->
+<!-- Web App Interface (c) Daniel Clarke 2015-2022 -->
 <head>
 	<script type="text/javascript" src="sha.js"></script>
 	<script type="text/javascript" src="totp.js"></script>
@@ -37,27 +38,36 @@
 	<h1>Web Authenticator</h1>
 	<button onclick="generate()">Reload Codes</button>
 	<div id="authSites" class="">
-		<div id="authString" class="authString" data-account="gov"></div>
-		<div id="authString" class="authString" data-account="test"></div>
+
 	</div>
 	<script>
-		//Dictionary of shared secrets for each account
+		//Dictionary of shared secrets for each account. Add to this to include new accounts
 		var dict = {
 			test1: "testt",
 			test: "MSGFS",
-			test2: "MS12GFS"
 			// etc.
 		};
 		generate();
 
 		function generate() {
-			var elements = document.getElementById("authSites").getElementsByTagName('div');
+			//Remove previous codes from HTML
+			var outputEle = document.getElementById("authSites")
+			var child = outputEle.lastElementChild; 
+			while (child) {
+				outputEle.removeChild(child);
+				child = outputEle.lastElementChild;
+			}
 			//Generate and insert for each site
-			for (var i = 0; i < elements.length; i++) {
-				var site = elements[i].dataset.account;
-				var totpObj = new TOTP();
-				var otp = totpObj.getOTP(dict[site]);
-				elements[i].innerHTML = '<span class="code">' + otp + '</span> <br> <span class="title">' + site + '</span>';
+			for (var prop in dict) {
+				if (Object.prototype.hasOwnProperty.call(dict, prop)) {
+					const authElement = document.createElement("div");
+					authElement.className = "authString"
+					//Generate TOTP code using JS library
+					var totpObj = new TOTP();
+					var otp = totpObj.getOTP(dict[prop]);
+					authElement.innerHTML = '<span class="code">' + otp + '</span> <br> <span class="title">' + prop + '</span>';
+					outputEle.appendChild(authElement);
+				}
 			}
 		}
 
