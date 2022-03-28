@@ -1,9 +1,17 @@
 <html>
-<!-- HTML & JS based 2 factor authenticator supporting the TOTP standard-->
+<!-- HTML & JS based 2 factor authenticator supporting the TOTP and HOTP standards-->
 <!-- Web App Interface (c) Daniel Clarke 2015-2022 -->
 <head>
+	<!--For TOTP method-->
 	<script type="text/javascript" src="sha.js"></script>
 	<script type="text/javascript" src="totp.js"></script>
+	<!--For HOTP method-->
+	<script type="text/javascript" src="2.5.3-crypto-sha1-hmac.js"></script>
+	<script type="text/javascript" src="hotp.js"></script>
+	<!--Decode base32 encoded secrets-->
+	<script type="text/javascript" src="base32.js"></script>
+	<!--Load keys from file-->
+	<script type="text/javascript" src="keys.js"></script>
 	<title>Web Authenticator</title>
 	<style>
 		body {
@@ -37,21 +45,15 @@
 <body>
 	<h1>Web Authenticator</h1>
 	<button onclick="generate()">Reload Codes</button>
-	<div id="authSites" class="">
-
+	<div id="authSitesTOTP" class="">
 	</div>
 	<script>
-		//Dictionary of shared secrets for each account. Add to this to include new accounts
-		var dict = {
-			test1: "testt",
-			test: "MSGFS",
-			// etc.
-		};
+
 		generate();
 
 		function generate() {
 			//Remove previous codes from HTML
-			var outputEle = document.getElementById("authSites")
+			var outputEle = document.getElementById("authSitesTOTP")
 			var child = outputEle.lastElementChild; 
 			while (child) {
 				outputEle.removeChild(child);
@@ -62,10 +64,43 @@
 				if (Object.prototype.hasOwnProperty.call(dict, prop)) {
 					const authElement = document.createElement("div");
 					authElement.className = "authString"
-					//Generate TOTP code using JS library
-					var totpObj = new TOTP();
-					var otp = totpObj.getOTP(dict[prop]);
-					authElement.innerHTML = '<span class="code">' + otp + '</span> <br> <span class="title">' + prop + '</span>';
+					var otp = "";
+					var count = undefined;
+					var format = undefined;
+					var secret = undefined;
+					if(typeof(dict[prop].secret) == 'string') {//Check secret is specified by user
+						if(dict[prop].isBase32){//Check if need to decode secret
+							//Decode secret
+							secret = "";
+							var decoder = new base32.Decoder({ type: "rfc4648" });
+							var out = decoder.write(dict[prop].secret).finalize();
+							out.forEach(element => secret += (element < 16 ? '0' : '') + element.toString(16));
+
+						}else{
+							//No need to decode secret
+							secret = dict[prop].secret;
+						}
+						switch(dict[prop].type) {
+						  case 'totp':
+							//Generate TOTP code using JS library
+							var totpObj = new TOTP();
+							otp = totpObj.getOTP(secret);
+
+							break;
+						  case 'hotp':
+							//Generate HOTP code using JS library
+							count = dict[prop].count || 0;
+							format = dict[prop].format || 'dec6';
+							otp = hotp(secret,count,format)
+							break;
+						  default:
+							// User hasn't specified 'hotp' or 'totp'
+							otp = "Err: Specify which of HOTP or TOTP should be used";
+						}
+					}else{
+						otp = "Err: Secret not specified";
+					}
+					authElement.innerHTML = '<span class="code">' + otp + '</span> <br> <span class="title">' + prop +'</span>' + (!isNaN(count) ? '<br> <span class="title">Count: ' + count +'</span>' : '');
 					outputEle.appendChild(authElement);
 				}
 			}
