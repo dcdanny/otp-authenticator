@@ -31,15 +31,15 @@
 			<h1>New Authenticator</h1>
 			<form autocomplete="off" id="newAuthForm">
 				<h2>QR Code Upload</h2>
-				<p>Upload a QR code image file to pre fill the form</p>
-				<input type="file" id="qrupload" onchange="qrcodeSubmit()" accept="image/*"/>
-				<br><br>
+				<p>Upload a QR code image file containing an OTPauth URI to pre fill the form</p>
+				<input type="file" id="qrupload" onchange="qrcodeSubmit()" accept="image/*"/><br>
+				<p id="postQRCodeMessage" class="warn"></p>
 				<hr>
 				<label for="acctName">Account Name (for your reference)</label>
 				<input type="text" id="acctName" name="acctName" value="" size="20" required>
 				<p class="emphasis">Note: This must be unique; existing authenticators with an identical Account Name will be overridden</p>
 				<br>
-				<span>OTP Method to use</span><br>
+				<span>OTP Algorithm to use</span><br>
 				<input type="radio" id="totp" name="type" value="totp" required>
 				<label for="totp">Time based (TOTP)</label><br>
 				<input type="radio" id="hotp" name="type" value="hotp">
@@ -71,7 +71,7 @@
 
 		<h1>Your keys.js file</h1>
 		<p>This will update upon generating a new authenticator above, or incrementing a HOTP token. To preserve your authenticators, simply copy all of the below into your keys.js file, replacing its current contents</p>
-		<button onclick="outputKeysJs()">Refresh</button>
+		<!-- <button onclick="outputKeysJs()">Refresh</button> -->
 		<button onclick="navigator.clipboard.writeText(document.getElementById('dictOutput').innerText)">Copy to Clipboard</button>
 		<br>
 		<div class="dictOutputContainer">

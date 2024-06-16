@@ -1,6 +1,7 @@
 body {
-    font-family: Arial, Helvetica, Sans-serif;
     background-color: #F0F0F0;
+    font-family: Arial, Helvetica, Sans-serif;
+    position: relative;
 }
 
 h1 {
@@ -120,7 +121,7 @@ button:active, input[type=submit]:active{
 .dictOutputContainer pre {
     margin: 0;
 }
-#postGenerateMessage {
+#postGenerateMessage, #postQRCodeMessage {
     display: none;
 }
 #acknowledgement {

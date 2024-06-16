@@ -18,13 +18,14 @@ function generate() {
     //Generate and insert for each site
     if (typeof dict === "undefined") {
         const authElement = generateMessage (
-            "keys.js was not loaded. Ensure you have created the file from keysSAMPLE.js file.",
+            "Error loading keys.js file. Ensure keys.js exists in the current folder and has structure based on keysSAMPLE.js.",
             "err"
         )
         outputEle.appendChild(authElement);
     } else if (Object.keys(dict).length === 0) {
         const authElement = generateMessage (
-            "keys.js is empty or contains no authenticators. Create one using the New Authenticator button or refer to keysSAMPLE.js file",
+            "keys.js is empty or contains no authenticators. \nCreate an Authenticator using the Manage Authenticators button and copy it"
+            + " to the keys.js file, or refer to README.md file for help",
             "warn"
         )
         outputEle.appendChild(authElement);
@@ -148,7 +149,8 @@ function newAuth (formElement) {
 //Output keys.js to manage auth output box
 function outputKeysJs () {
     const outputEle = document.getElementById('dictOutput');
-    let keysjs = 'var dict = ' + JSON.stringify(dict, null, "\t") + ";";
+
+    let keysjs = 'var dict = ' + JSON.stringify(((typeof dict == "undefined") ? {} : dict), null, "\t") + ";";
     outputEle.innerText = keysjs;
 }
 
@@ -173,7 +175,12 @@ function formToDict(formElement){
             data[element.name] = element.value * 1;
         }
     }
-    dict[acctName] = data
+    if (typeof dict === "undefined") {
+        dict = {};
+        dict[acctName] = data;
+    } else {
+        dict[acctName] = data
+    }
     return dict;
 }
 function qrcodeSubmit() {
@@ -188,12 +195,13 @@ function qrcodeSubmit() {
         const imageData = ctx.getImageData(0, 0, img.naturalWidth, img.naturalHeight) // Assigns image base64 string in jpeg format to a variable
         const code = jsQR(imageData.data, img.naturalWidth, img.naturalHeight)
         if (code) {
-            console.log("Found QR code", code.data)
+            setPostQRCodeMessage('Found QR code', 'msg');
+            console.log(code.data)
+            setPostQRCodeMessage('Found QR code: '+code.data.split('?')[0], 'msg');
             let data = parseOtpUri(code.data);
-            console.log(data);
             otpDataToForm(data, newAuthForm);
         } else {
-            console.error("No QR Code found");
+            setPostQRCodeMessage('Error: No QR Code found in image', 'err');
         }
     }
     img.src = URL.createObjectURL(file);   
@@ -219,10 +227,10 @@ function parseOtpUri(uri) {
             }
             data.isBase32 = true;
         } else {
-            console.log("Error: invalid otp type must be hotp or totp");
+            setPostQRCodeMessage('Error: invalid URI, otp type must be hotp or totp', 'err');
         }
     } else {
-        console.log("invalid protocol must be otpauth");
+        setPostQRCodeMessage('Error: invalid URI, protocol must be otpauth', 'err');
     }
     return data;
     
@@ -247,4 +255,29 @@ function otpDataToForm(data, formElement) {
     } else if (data.digits == '40') {
         document.getElementById('hex40').checked = true;
     }
+}
+function setPostQRCodeMessage(message, type) {
+    const postQRCodeMessage = document.getElementById('postQRCodeMessage');
+    return messageLog(message, type, postQRCodeMessage);
+}
+function messageLog(message, type, element) {
+    element.style.display = "block";
+    switch (type) {
+        case 'msg':
+            element.setAttribute("class", "title msg");
+            console.log(message);
+        break;
+        case 'warn':
+            element.setAttribute("class", "title warn");
+            console.warn(message);
+        break;
+        case 'err':
+            element.setAttribute("class", "title err");
+            console.error(message);
+        break;
+        default:
+            return;
+    }
+    element.innerText = message;
+    return element;
 }
