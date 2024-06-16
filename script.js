@@ -1,10 +1,43 @@
-generate();
+if (localStorage.getItem('dict') != null && localStorage.getItem('dict') !== JSON.stringify(dict)){
+    recoverPreviousSession();
+} else {
+    generate();
+}
 const newAuthForm = document.getElementById("newAuthForm");
 newAuthForm.addEventListener('submit', (e) => {
     //download track
     e.preventDefault();
     newAuth(newAuthForm);
 });
+function recoverPreviousSession() {
+    const outputEle = document.getElementById("authSitesTOTP");
+    const menubar = document.getElementById("menubar");
+    menubar.style.display = "none";
+    let authElement =
+    generateMessage('Your keys.js file and the last known state of the page differ. Did you refresh the page without updating your keys.js file?','warn');
+    outputEle.appendChild(authElement);
+    authElement =
+    generateMessage('What would you like to do?\n\n','warn');
+    let continueFileButton = document.createElement('button');
+    continueFileButton.addEventListener('click', (e) => {
+        localStorage.setItem('dict', JSON.stringify(dict));
+        menubar.style.display = "block";
+        generate();
+    });
+    continueFileButton.innerText = "Continue loading from keys.js";
+    authElement.appendChild(continueFileButton);
+    let restoreLastSessionButton = document.createElement('button');
+    restoreLastSessionButton.addEventListener('click', (e) => {
+        dict = JSON.parse(localStorage.getItem('dict'));
+        menubar.style.display = "block";
+        generate();
+    });
+    restoreLastSessionButton.innerText = "Restore Last Session (Safer)";
+    authElement.appendChild(restoreLastSessionButton);
+
+    outputEle.appendChild(authElement);
+    console.log("err");
+}
 
 //Function to generate all codes and display them
 function generate() {
@@ -145,10 +178,12 @@ function newAuth (formElement) {
     newAuthObject = formToDict(formElement);
     outputKeysJs()
     document.getElementById('postGenerateMessage').style.display = "block";
+    generate();
 }
 //Output keys.js to manage auth output box
 function outputKeysJs () {
     const outputEle = document.getElementById('dictOutput');
+    localStorage.setItem('dict', JSON.stringify(dict));
 
     let keysjs = 'var dict = ' + JSON.stringify(((typeof dict == "undefined") ? {} : dict), null, "\t") + ";";
     outputEle.innerText = keysjs;
