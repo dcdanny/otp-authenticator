@@ -1,6 +1,14 @@
+html {
+    margin: 0;
+    height: 100%;
+}
 body {
     background-color: #F0F0F0;
+    box-sizing: border-box;
     font-family: Arial, Helvetica, Sans-serif;
+    height: 100%;
+    margin: 0;
+    padding: 5px;
     position: relative;
 }
 
@@ -22,7 +30,7 @@ h1 {
     width: 100%;
 }
 #manageAuthContainer {
-    background-color: FFFFFF;
+    background-color: #FFFFFF;
     border: 2px solid #3388ff;
     display: none;
     margin: 10px auto;
@@ -40,7 +48,7 @@ button.manageAuthBtn {
     right: 0;
 }
 .authString {
-    background-color: FFFFFF;
+    background-color: #FFFFFF;
     margin: 10px auto;
     padding: 5px;
     position: relative;
@@ -88,7 +96,7 @@ div.closeButton {
 }
 
 button, input[type=submit]{
-    background-color: #FFF;
+    background-color: #FFFFFF;
     border: 2px dashed #3388ff;
     border-radius: 5px;
     cursor: pointer;
@@ -130,5 +138,5 @@ button:active, input[type=submit]:active{
     font-weight: bold;
     left: 0;
     padding: 3px;
-    position: absolute;
+    position: fixed;
 }
