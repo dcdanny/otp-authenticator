@@ -36,7 +36,6 @@ function recoverPreviousSession() {
     authElement.appendChild(restoreLastSessionButton);
 
     outputEle.appendChild(authElement);
-    console.log("err");
 }
 
 //Function to generate all codes and display them
