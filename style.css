@@ -1,0 +1,133 @@
+body {
+    font-family: Arial, Helvetica, Sans-serif;
+    background-color: #F0F0F0;
+}
+
+h1 {
+    text-align: center;
+}
+.emphasis {
+    color: #666666;
+    font-style: italic;
+    font-size: 90%;
+    margin: 0;
+}
+.menubar {
+    margin: 10px auto;
+    padding: 5px;
+    position: relative;
+    max-width: 600px;
+    text-align: center;
+    width: 100%;
+}
+#manageAuthContainer {
+    background-color: FFFFFF;
+    border: 2px solid #3388ff;
+    display: none;
+    margin: 10px auto;
+    padding: 17px 5px;
+    position: relative;
+    max-width: 600px;
+    /* text-align: center; */
+    width: 100%;
+}
+#newAuthContainer {
+    display: none;
+}
+button.manageAuthBtn {
+    position: absolute;
+    right: 0;
+}
+.authString {
+    background-color: FFFFFF;
+    margin: 10px auto;
+    padding: 5px;
+    position: relative;
+    max-width: 600px;
+    text-align: center;
+    width: 100%;
+}
+
+.authString .title {
+    color: #666666;
+}
+
+.authString span.code {
+    color: #3388ff;
+    font-size: 30pt;
+    text-align: center;
+}
+
+.authString .msg:before, .msg:before {
+    content: "\00BB";
+    margin-right: 6px;
+}
+
+.authString .warn, .warn{
+    color:#bf5900;
+}
+.authString .warn:before, .warn:before {
+    content: "\26A0";
+    margin-right: 6px;
+}
+
+.authString .err, .err{
+    color:#bf0000;
+}
+.authString .err:before, .err:before {
+    content: "\274C";
+    margin-right: 6px;
+}
+div.closeButton {
+    cursor:pointer;
+    right:0;
+    padding: 5px 5px 10px 10px;
+    position: absolute;
+    top: 0;
+}
+
+button, input[type=submit]{
+    background-color: #FFF;
+    border: 2px dashed #3388ff;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-block;
+    margin-left: 5px;
+    /* margin: auto; */
+    padding:8px 6px;
+}
+button.reloadButton{
+    bottom: 4px;
+    position: absolute;
+    right: 4px;
+    top: 4px;
+}
+button:hover, input[type=submit]:hover{
+    background-color: #EEE;
+}
+button:active, input[type=submit]:active{
+    background-color: #CCC;
+    border-style: solid;
+}
+.dictOutputContainer {
+    background-color: #EEEEEE;
+    border: 2px dotted #3388ff;
+    height: 15lh;
+    margin: 5px 0px;
+    overflow-y: scroll;
+    /* width:100% */
+}
+.dictOutputContainer pre {
+    margin: 0;
+}
+#postGenerateMessage {
+    display: none;
+}
+#acknowledgement {
+    bottom: 0;
+    color: #CCC;
+    font-weight: bold;
+    left: 0;
+    padding: 3px;
+    position: absolute;
+}
