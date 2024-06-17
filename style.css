@@ -101,14 +101,20 @@ button, input[type=submit], input[type=file]::file-selector-button {
     border-radius: 5px;
     cursor: pointer;
     display: inline-block;
-    margin-left: 5px;
+    /* margin-left: 5px; */
     /* margin: auto; */
+    margin: 2px;
     padding:8px 6px;
 }
 button.reloadButton{
     bottom: 4px;
     position: absolute;
     right: 4px;
+    top: 4px;
+}
+button.copyCode {
+    left: 4px;
+    position: absolute;
     top: 4px;
 }
 button:hover, input[type=submit]:hover,

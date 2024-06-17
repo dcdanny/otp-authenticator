@@ -118,8 +118,20 @@ function generateCode(prop){
     }else{
         otp = "Err: Secret not specified";
     }
-    authElement.innerHTML = '<span class="code">' + otp + '</span> <br> <span class="title">' + prop +'</span>';
+    // Add auth code display
+    var codeEle = document.createElement("span");
+    codeEle.innerText = otp;
+    codeEle.setAttribute("class", "code");
+    authElement.appendChild(codeEle);
+    authElement.appendChild(document.createElement("br"));
+    // Add auth code's title
+    var titleEle = document.createElement("span");
+    titleEle.innerText = prop;
+    titleEle.setAttribute("class", "title");
+    authElement.appendChild(titleEle);
+    //authElement.innerHTML = '<span class="code">' + otp + '</span> <br> <span class="title">' + prop +'</span>';
     if(!isNaN(count)){
+        // Add next code to hotp authenticators
         authElement.appendChild(document.createElement("br"));
         var countEle = document.createElement("span");
         countEle.innerText = 'Count: ' + count;
@@ -131,6 +143,13 @@ function generateCode(prop){
         nextButton.addEventListener("click", function(){ reloadCode(prop, this); });
         authElement.appendChild(nextButton);
     }
+    // Add button to copy the code to clipboard
+    var copyCodeButton = document.createElement("button");
+    copyCodeButton.innerText = 'Copy';
+    copyCodeButton.setAttribute("class", "copyCode");
+    copyCodeButton.setAttribute("title", "Copy this Code to the Clipboard");
+    copyCodeButton.addEventListener("click", function(e){ navigator.clipboard.writeText(e.target.parentElement.getElementsByClassName('code')[0].innerText) });
+    authElement.appendChild(copyCodeButton);
     return authElement;
 }
 //Display err/warn/info message as an authenticator element
