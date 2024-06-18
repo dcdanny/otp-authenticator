@@ -1,4 +1,4 @@
-if (localStorage.getItem('dict') != null && localStorage.getItem('dict') !== JSON.stringify(dict)){
+if (localStorage.getItem('dict') != null && localStorage.getItem('dict') !== JSON.stringify(dict)) {
     recoverPreviousSession();
 } else {
     generate();
@@ -14,10 +14,10 @@ function recoverPreviousSession() {
     const menubar = document.getElementById("menubar");
     menubar.style.display = "none";
     let authElement =
-    generateMessage('Your keys.js file and the last known state of the page differ. Did you refresh the page without updating your keys.js file?','warn');
+        generateMessage('Your keys.js file and the last known state of the page differ. Did you refresh the page without updating your keys.js file?', 'warn');
     outputEle.appendChild(authElement);
     authElement =
-    generateMessage('What would you like to do?\n\n','warn');
+        generateMessage('What would you like to do?\n\n', 'warn');
     let continueFileButton = document.createElement('button');
     continueFileButton.addEventListener('click', (e) => {
         localStorage.setItem('dict', JSON.stringify(dict));
@@ -49,13 +49,13 @@ function generate() {
     }
     //Generate and insert for each site
     if (typeof dict === "undefined") {
-        const authElement = generateMessage (
+        const authElement = generateMessage(
             "Error loading keys.js file. Ensure keys.js exists in the current folder and has structure based on keysSAMPLE.js.",
             "err"
         )
         outputEle.appendChild(authElement);
     } else if (Object.keys(dict).length === 0) {
-        const authElement = generateMessage (
+        const authElement = generateMessage(
             "keys.js is empty or contains no authenticators. \nCreate an Authenticator using the Manage Authenticators button and copy it"
             + " to the keys.js file, or refer to README.md file for help",
             "warn"
@@ -70,52 +70,52 @@ function generate() {
     }
 }
 //Function to reload one code, replacing previous one in doc
-function reloadCode(prop, thisEle){
+function reloadCode(prop, thisEle) {
     dict[prop].count++;
     var reminder = document.createElement("span");
-    reminder.innerText = '\nRemember: Update keys.js file with the new count value ('+(dict[prop].count+1)+')';
+    reminder.innerText = '\nRemember: Update keys.js file with the new count value (' + (dict[prop].count + 1) + ')';
     reminder.setAttribute("class", "title warn");
     var authElement = generateCode(prop);
     authElement.appendChild(reminder);
     thisEle.parentNode.parentNode.replaceChild(authElement, thisEle.parentNode);
     outputKeysJs(); //Output to manage auth box
 }
-function generateCode(prop){
+function generateCode(prop) {
     const authElement = document.createElement("div");
     authElement.className = "authString";
     var otp = "";
     var count = undefined;
     var format = undefined;
     var secret = undefined;
-    if(typeof(dict[prop].secret) == 'string') {//Check secret is specified by user
-        if(dict[prop].isBase32){//Check if need to decode secret
+    if (typeof dict[prop].secret == 'string') {//Check secret is specified by user
+        if (dict[prop].isBase32) {//Check if need to decode secret
             //Decode secret
             secret = "";
             var decoder = new base32.Decoder({ type: "rfc4648" });
             var out = decoder.write(dict[prop].secret).finalize();
             out.forEach(element => secret += (element < 16 ? '0' : '') + element.toString(16));
-        }else{
+        } else {
             //No need to decode secret
             secret = dict[prop].secret;
         }
-        switch(dict[prop].type) {
-          case 'totp':
-            //Generate TOTP code using JS library
-            var totpObj = new TOTP();
-            otp = totpObj.getOTP(secret);
+        switch (dict[prop].type) {
+            case 'totp':
+                //Generate TOTP code using JS library
+                var totpObj = new TOTP();
+                otp = totpObj.getOTP(secret);
 
-            break;
-          case 'hotp':
-            //Generate HOTP code using JS library
-            count = dict[prop].count || 0;
-            format = dict[prop].format || 'dec6';
-            otp = hotp(secret,count,format)
-            break;
-          default:
-            // User hasn't specified 'hotp' or 'totp'
-            otp = "Err: Specify which of HOTP or TOTP should be used";
+                break;
+            case 'hotp':
+                //Generate HOTP code using JS library
+                count = dict[prop].count || 0;
+                format = dict[prop].format || 'dec6';
+                otp = hotp(secret, count, format)
+                break;
+            default:
+                // User hasn't specified 'hotp' or 'totp'
+                otp = "Err: Specify which of HOTP or TOTP should be used";
         }
-    }else{
+    } else {
         otp = "Err: Secret not specified";
     }
     // Add auth code display
@@ -130,7 +130,7 @@ function generateCode(prop){
     titleEle.setAttribute("class", "title");
     authElement.appendChild(titleEle);
     //authElement.innerHTML = '<span class="code">' + otp + '</span> <br> <span class="title">' + prop +'</span>';
-    if(!isNaN(count)){
+    if (!isNaN(count)) {
         // Add next code to hotp authenticators
         authElement.appendChild(document.createElement("br"));
         var countEle = document.createElement("span");
@@ -140,7 +140,7 @@ function generateCode(prop){
         var nextButton = document.createElement("button");
         nextButton.innerText = 'Next Code';
         nextButton.setAttribute("class", "reloadButton");
-        nextButton.addEventListener("click", function(){ reloadCode(prop, this); });
+        nextButton.addEventListener("click", function () { reloadCode(prop, this); });
         authElement.appendChild(nextButton);
     }
     // Add button to copy the code to clipboard
@@ -148,25 +148,27 @@ function generateCode(prop){
     copyCodeButton.innerText = 'Copy';
     copyCodeButton.setAttribute("class", "copyCode");
     copyCodeButton.setAttribute("title", "Copy this Code to the Clipboard");
-    copyCodeButton.addEventListener("click", function(e){ navigator.clipboard.writeText(e.target.parentElement.getElementsByClassName('code')[0].innerText) });
+    copyCodeButton.addEventListener("click", function (e) {
+        navigator.clipboard.writeText(e.target.parentElement.getElementsByClassName('code')[0].innerText);
+    });
     authElement.appendChild(copyCodeButton);
     return authElement;
 }
 //Display err/warn/info message as an authenticator element
-function generateMessage (message, type) {
+function generateMessage(message, type) {
     const authElement = document.createElement("div");
     authElement.className = "authString";
     var reminder = document.createElement("span");
     switch (type) {
         case 'msg':
             reminder.setAttribute("class", "title msg");
-        break;
+            break;
         case 'warn':
             reminder.setAttribute("class", "title warn");
-        break;
+            break;
         case 'err':
             reminder.setAttribute("class", "title err");
-        break;
+            break;
         default:
             return;
     }
@@ -174,32 +176,32 @@ function generateMessage (message, type) {
     authElement.appendChild(reminder);
     return authElement;
 }
-function toggleManageAuthDisplay (message, type) {
+function toggleManageAuthDisplay(message, type) {
     outputKeysJs();
     const manageAuthContainer = document.getElementById('manageAuthContainer');
-    if(manageAuthContainer.style.display == "block") {
+    if (manageAuthContainer.style.display == "block") {
         manageAuthContainer.style.display = "none";
     } else {
         manageAuthContainer.style.display = "block";
     }
 }
-function toggleNewAuthDisplay (message, type) {
+function toggleNewAuthDisplay(message, type) {
     outputKeysJs();
     const manageAuthContainer = document.getElementById('newAuthContainer');
-    if(manageAuthContainer.style.display == "block") {
+    if (manageAuthContainer.style.display == "block") {
         manageAuthContainer.style.display = "none";
     } else {
         manageAuthContainer.style.display = "block";
     }
 }
-function newAuth (formElement) {
+function newAuth(formElement) {
     newAuthObject = formToDict(formElement);
     outputKeysJs()
     document.getElementById('postGenerateMessage').style.display = "block";
     generate();
 }
 //Output keys.js to manage auth output box
-function outputKeysJs () {
+function outputKeysJs() {
     const outputEle = document.getElementById('dictOutput');
     localStorage.setItem('dict', JSON.stringify(dict));
 
@@ -207,11 +209,11 @@ function outputKeysJs () {
     outputEle.innerText = keysjs;
 }
 
-function formToDict(formElement){
+function formToDict(formElement) {
     let data = {};
     let acctName;
     this.formInputs = formElement.querySelectorAll('input[type=text], input[type=radio]:checked');
-    for(element of this.formInputs){
+    for (element of this.formInputs) {
         if (element.name == "acctName") {
             acctName = element.value;
         } else {
@@ -219,11 +221,11 @@ function formToDict(formElement){
         }
     }
     this.checkboxInputs = formElement.querySelectorAll('input[type=checkbox]');
-    for(element of this.checkboxInputs){
+    for (element of this.checkboxInputs) {
         data[element.name] = element.checked;
     }
     this.numberInputs = formElement.querySelectorAll('input[type=number]');
-    for(element of this.numberInputs){
+    for (element of this.numberInputs) {
         if (data["type"] == "hotp") {
             data[element.name] = element.value * 1;
         }
@@ -243,21 +245,21 @@ function qrcodeSubmit() {
     ctx.imageSmoothingEnabled = false
 
     var img = new Image;
-    img.onload = function() {
-        ctx.drawImage(img, 10,10,150,150);
+    img.onload = function () {
+        ctx.drawImage(img, 10, 10, 150, 150);
         const imageData = ctx.getImageData(0, 0, img.naturalWidth, img.naturalHeight) // Assigns image base64 string in jpeg format to a variable
         const code = jsQR(imageData.data, img.naturalWidth, img.naturalHeight)
         if (code) {
             setPostQRCodeMessage('Found QR code', 'msg');
             console.log(code.data)
-            setPostQRCodeMessage('Found QR code: '+code.data.split('?')[0], 'msg');
+            setPostQRCodeMessage('Found QR code: ' + code.data.split('?')[0], 'msg');
             let data = parseOtpUri(code.data);
             otpDataToForm(data, newAuthForm);
         } else {
             setPostQRCodeMessage('Error: No QR Code found in image', 'err');
         }
     }
-    img.src = URL.createObjectURL(file);   
+    img.src = URL.createObjectURL(file);
 }
 
 function parseOtpUri(uri) {
@@ -267,7 +269,7 @@ function parseOtpUri(uri) {
     if (protocolArr[0] == "otpauth") {
         data.protocol = protocolArr[0];
         let hostname = protocolArr[1].split('/');
-        if (hostname[0] == 'hotp' || hostname[0] == 'totp'){
+        if (hostname[0] == 'hotp' || hostname[0] == 'totp') {
             data.type = hostname[0];
             let username = hostname[1].split('?');
             data.username = username[0];
@@ -286,20 +288,20 @@ function parseOtpUri(uri) {
         setPostQRCodeMessage('Error: invalid URI, protocol must be otpauth', 'err');
     }
     return data;
-    
+
 }
 function otpDataToForm(data, formElement) {
     document.getElementById('acctName').value = data.issuer + ':' + data.username;
     document.getElementById('secret').value = data.secret;
     document.getElementById('isBase32').checked = true;
-    if (data.type === 'hotp'){
+    if (data.type === 'hotp') {
         document.getElementById('hotp').checked = true;
         document.getElementById('count').value = data.counter;
-    } else if (data.type === 'totp'){
+    } else if (data.type === 'totp') {
         document.getElementById('totp').checked = true;
     }
 
-    if(data.digits == '6'){
+    if (data.digits == '6') {
         document.getElementById('dec6').checked = true;
     } else if (data.digits == '7') {
         document.getElementById('dec7').checked = true;
@@ -319,15 +321,15 @@ function messageLog(message, type, element) {
         case 'msg':
             element.setAttribute("class", "title msg");
             console.log(message);
-        break;
+            break;
         case 'warn':
             element.setAttribute("class", "title warn");
             console.warn(message);
-        break;
+            break;
         case 'err':
             element.setAttribute("class", "title err");
             console.error(message);
-        break;
+            break;
         default:
             return;
     }

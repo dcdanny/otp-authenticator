@@ -2,6 +2,7 @@ html {
     margin: 0;
     height: 100%;
 }
+
 body {
     background-color: #F0F0F0;
     box-sizing: border-box;
@@ -15,12 +16,14 @@ body {
 h1 {
     text-align: center;
 }
+
 .emphasis {
     color: #666666;
     font-style: italic;
     font-size: 90%;
     margin: 0;
 }
+
 .menubar {
     margin: 10px auto;
     padding: 5px;
@@ -29,6 +32,7 @@ h1 {
     text-align: center;
     width: 100%;
 }
+
 #manageAuthContainer {
     background-color: #FFFFFF;
     border: 2px solid #3388ff;
@@ -40,13 +44,16 @@ h1 {
     /* text-align: center; */
     width: 100%;
 }
+
 #newAuthContainer {
     display: none;
 }
+
 button.manageAuthBtn {
     position: absolute;
     right: 0;
 }
+
 .authString {
     background-color: #FFFFFF;
     margin: 10px auto;
@@ -67,35 +74,45 @@ button.manageAuthBtn {
     text-align: center;
 }
 
-.authString .msg:before, .msg:before {
+.authString .msg:before,
+.msg:before {
     content: "\00BB";
     margin-right: 6px;
 }
 
-.authString .warn, .warn{
-    color:#bf5900;
+.authString .warn,
+.warn {
+    color: #bf5900;
 }
-.authString .warn:before, .warn:before {
+
+.authString .warn:before,
+.warn:before {
     content: "\26A0";
     margin-right: 6px;
 }
 
-.authString .err, .err{
-    color:#bf0000;
+.authString .err,
+.err {
+    color: #bf0000;
 }
-.authString .err:before, .err:before {
+
+.authString .err:before,
+.err:before {
     content: "\274C";
     margin-right: 6px;
 }
+
 div.closeButton {
-    cursor:pointer;
-    right:0;
+    cursor: pointer;
+    right: 0;
     padding: 5px 5px 10px 10px;
     position: absolute;
     top: 0;
 }
 
-button, input[type=submit], input[type=file]::file-selector-button {
+button,
+input[type=submit],
+input[type=file]::file-selector-button {
     background-color: #FFFFFF;
     border: 2px dashed #3388ff;
     border-radius: 5px;
@@ -104,28 +121,35 @@ button, input[type=submit], input[type=file]::file-selector-button {
     /* margin-left: 5px; */
     /* margin: auto; */
     margin: 2px;
-    padding:8px 6px;
+    padding: 8px 6px;
 }
-button.reloadButton{
+
+button.reloadButton {
     bottom: 4px;
     position: absolute;
     right: 4px;
     top: 4px;
 }
+
 button.copyCode {
     left: 4px;
     position: absolute;
     top: 4px;
 }
-button:hover, input[type=submit]:hover,
+
+button:hover,
+input[type=submit]:hover,
 input[type=file]::file-selector-button:hover {
     background-color: #EEE;
 }
-button:active, input[type=submit]:active,
+
+button:active,
+input[type=submit]:active,
 input[type=file]::file-selector-button:active {
     background-color: #CCC;
     border-style: solid;
 }
+
 .dictOutputContainer {
     background-color: #EEEEEE;
     border: 2px dotted #3388ff;
@@ -134,12 +158,16 @@ input[type=file]::file-selector-button:active {
     overflow-y: scroll;
     /* width:100% */
 }
+
 .dictOutputContainer pre {
     margin: 0;
 }
-#postGenerateMessage, #postQRCodeMessage {
+
+#postGenerateMessage,
+#postQRCodeMessage {
     display: none;
 }
+
 #acknowledgement {
     bottom: 0;
     color: #CCC;
