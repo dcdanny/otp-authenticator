@@ -53,7 +53,7 @@
 				<label for="isBase32">Secret Key is base32 encoded</label>
 				<input type="checkbox" id="isBase32" name="isBase32"><br>
 				<br>
-				<span>Output Key format (HOTP only)</span><br>
+				<span>Output Key format</span><br>
 				<input type="radio" id="dec6" name="format" value="dec6" required>
 				<label for="dec6">6 Character Decimal (dec6) - default</label><br>
 				<input type="radio" id="dec7" name="format" value="dec7">
@@ -61,7 +61,7 @@
 				<input type="radio" id="dec8" name="format" value="dec8">
 				<label for="dec8">8 Character Decimal (dec8)</label><br>
 				<input type="radio" id="hex40" name="format" value="hex40">
-				<label for="hex40">40 Character Hexadecimal (hex40)</label><br>
+				<label for="hex40">40 Character Hexadecimal (hex40) - HOTP only</label><br>
 				<br>
 				<label for="count">Count of key uses (HOTP only)</label>
 				<input type="number" id="count" name="count" min="0" value=""><br>

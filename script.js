@@ -102,25 +102,49 @@ function generateCode(prop) {
             case 'totp':
                 //Generate TOTP code using JS library
                 var totpObj = new TOTP();
-                otp = totpObj.getOTP(secret);
-
+                let otpLength;
+                switch (dict[prop].format) {
+                    case 'dec6':
+                        otpLength = 6;
+                        break;
+                    case 'dec7':
+                        otpLength = 7;
+                        break;
+                    case 'dec8':
+                        otpLength = 8;
+                        break;
+                    case 'hex40':
+                        return {"error":"Err: No hex40 function for totp"}
+                    default:
+                        otpLength = 6;
+                }
+                otpObj = totpObj.getOTP(secret,otpLength);
+                if (otpObj.error) {
+                    return {"error":otpObj.error};
+                }
+                return {"otp":otpObj.otp,"format":dict[prop].format,"secondsRemaining":otpObj.secondsRemaining};
                 break;
             case 'hotp':
-                //Generate HOTP code using JS library
-                count = dict[prop].count || 0;
-                format = dict[prop].format || 'dec6';
-                otp = hotp(secret, count, format)
+                try {
+                    //Generate HOTP code using JS library
+                    count = dict[prop].count || 0;
+                    format = dict[prop].format || 'dec6';
+                    otp = hotp(secret, count, format);
+                    return {"otp":otp,"format":format,"count":count};
+                } catch (error) {
+                    return {"error":error};
+                }
                 break;
             default:
                 // User hasn't specified 'hotp' or 'totp'
-                otp = "Err: Specify which of HOTP or TOTP should be used";
+                return {"error":"Err: Specify which of HOTP or TOTP should be used"};
         }
     } else {
         otp = "Err: Secret not specified";
     }
     // Add auth code display
     var codeEle = document.createElement("span");
-    codeEle.innerText = otp;
+    codeEle.innerText = generatedCodeObj.otp;
     codeEle.setAttribute("class", "code");
     authElement.appendChild(codeEle);
     authElement.appendChild(document.createElement("br"));
@@ -130,11 +154,11 @@ function generateCode(prop) {
     titleEle.setAttribute("class", "title");
     authElement.appendChild(titleEle);
     //authElement.innerHTML = '<span class="code">' + otp + '</span> <br> <span class="title">' + prop +'</span>';
-    if (!isNaN(count)) {
+    if (!isNaN(generatedCodeObj.count)) {
         // Add next code to hotp authenticators
         authElement.appendChild(document.createElement("br"));
         var countEle = document.createElement("span");
-        countEle.innerText = 'Count: ' + count;
+        countEle.innerText = 'Count: ' + generatedCodeObj.count;
         countEle.setAttribute("class", "title");
         authElement.appendChild(countEle);
         var nextButton = document.createElement("button");
