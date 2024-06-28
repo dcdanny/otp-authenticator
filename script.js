@@ -72,14 +72,16 @@ function generate() {
 //Function to reload one code, replacing previous one in doc
 function reloadCode(prop, thisEle) {
     dict[prop].count++;
-    var reminder = document.createElement("span");
-    reminder.innerText = '\nRemember: Update keys.js file with the new count value (' + (dict[prop].count + 1) + ')';
-    reminder.setAttribute("class", "title warn");
-    var authElement = generateCode(prop);
+    var reminder = document.createElement("div");
+    reminder.innerText = 'Remember: Update keys.js file with the new count value (' + (dict[prop].count + 1) + ')';
+    reminder.appendChild(document.createElement("br"));
+    reminder.setAttribute("class", "title msg");
+    var authElement = generateCodeElement(prop);
     authElement.appendChild(reminder);
     thisEle.parentNode.parentNode.replaceChild(authElement, thisEle.parentNode);
     outputKeysJs(); //Output to manage auth box
 }
+
 function generateCode(prop) {
     const authElement = document.createElement("div");
     authElement.className = "authString";
