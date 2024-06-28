@@ -64,7 +64,7 @@ function generate() {
     } else {
         for (var prop in dict) {
             if (Object.prototype.hasOwnProperty.call(dict, prop)) {
-                outputEle.appendChild(generateCode(prop));
+                outputEle.appendChild(generateCodeElement(prop));
             }
         }
     }
@@ -83,8 +83,6 @@ function reloadCode(prop, thisEle) {
 }
 
 function generateCode(prop) {
-    const authElement = document.createElement("div");
-    authElement.className = "authString";
     var otp = "";
     var count = undefined;
     var format = undefined;
@@ -144,6 +142,17 @@ function generateCode(prop) {
     } else {
         otp = "Err: Secret not specified";
     }
+}
+
+function generateCodeElement(prop) {
+    const authElement = document.createElement("div");
+    authElement.className = "authString";
+
+    let generatedCodeObj = generateCode(prop);
+
+    if(generatedCodeObj.error) {
+        return generateMessage(generatedCodeObj.error, "err");
+    }
     // Add auth code display
     var codeEle = document.createElement("span");
     codeEle.innerText = generatedCodeObj.otp;
@@ -169,6 +178,21 @@ function generateCode(prop) {
         nextButton.addEventListener("click", function () { reloadCode(prop, this); });
         authElement.appendChild(nextButton);
     }
+    if (!isNaN(generatedCodeObj.secondsRemaining)) {
+        // Add countdown to totp authenticators
+        authElement.appendChild(document.createElement("br"));
+        var timeExpiredWarnEle = document.createElement("span");
+        authElement.appendChild(timeExpiredWarnEle);
+        var remainingTimeEle = document.createElement("div");
+        remainingTimeEle.setAttribute("class", "timeRemainingDisp");
+        authElement.appendChild(remainingTimeEle);
+
+        let timeExpiredCallback = function() {
+            timeExpiredWarnEle.innerText = "Code expired. Use Reload All Codes button";
+            timeExpiredWarnEle.setAttribute("class", "title warn");
+        }
+        let intervalId = setTimeBar(remainingTimeEle, generatedCodeObj. secondsRemaining, 30, timeExpiredCallback);
+    }
     // Add button to copy the code to clipboard
     var copyCodeButton = document.createElement("button");
     copyCodeButton.innerText = 'Copy';
@@ -180,6 +204,27 @@ function generateCode(prop) {
     authElement.appendChild(copyCodeButton);
     return authElement;
 }
+
+function setTimeBar(element,secondsRemaining, secondsTotal, timeoutCallback){
+    let percentage = 100*(secondsRemaining/secondsTotal);
+    element.style.width = percentage + "%";
+    let intervalId = setInterval((element) => {
+        secondsRemaining -= 1;
+        percentage = 100*(secondsRemaining/secondsTotal);
+        element.style.width = percentage+"%";
+      }, 1000, element);
+
+    let timeoutId = setTimeout((intervalId) => {
+        if (typeof intervalId === "number") {
+            clearTimeout(intervalId);
+        }
+        timeoutCallback();
+
+    }, secondsRemaining*1000,intervalId);
+
+    return intervalId;
+}
+
 //Display err/warn/info message as an authenticator element
 function generateMessage(message, type) {
     const authElement = document.createElement("div");

@@ -176,3 +176,12 @@ input[type=file]::file-selector-button:active {
     padding: 3px;
     position: fixed;
 }
+
+.timeRemainingDisp {
+    background-color: #3388ff;
+    bottom: 0px;
+    height: 2px;
+    left: 0;
+    position: absolute;
+    width: 100%;
+}
