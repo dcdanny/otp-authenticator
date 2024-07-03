@@ -214,13 +214,16 @@ function setTimeBar(element,secondsRemaining, secondsTotal, timeoutCallback){
         element.style.width = percentage+"%";
       }, 1000, element);
 
-    let timeoutId = setTimeout((intervalId) => {
+    let timeoutId = setTimeout((intervalId, element) => {
+        if (typeof element === "object") {
+            element.style.width = "0%";
+        }
         if (typeof intervalId === "number") {
             clearTimeout(intervalId);
         }
         timeoutCallback();
 
-    }, secondsRemaining*1000,intervalId);
+    }, secondsRemaining*1000,intervalId, element);
 
     return intervalId;
 }
