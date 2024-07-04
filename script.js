@@ -358,6 +358,55 @@ function parseOtpUri(uri) {
         } else {
             setPostQRCodeMessage('Error: invalid URI, otp type must be hotp or totp', 'err');
         }
+    } else if (protocolArr[0] == "otpauth-migration") {
+        let uriData = {}
+        uriData.protocol = protocolArr[0];
+        let hostname = protocolArr[1].split('?');
+        if (hostname[0] == 'offline') {
+            uriData.type = hostname[0];
+            let args = hostname[1].split('&');
+            //Split args which come after username
+            for (i = 0; i < args.length; i++) {
+                parameter = args[i].split('=');
+                uriData[parameter[0]] = decodeURIComponent(parameter[1]);
+            }
+            //url to uint array
+            let uint = Uint8Array.from(atob(uriData.data), (c) => c.charCodeAt(0));
+            //decode protocol buffer
+            let pbf = new Pbf(uint);
+            let decodedBuffer = Payload.read(pbf).otp_parameters;
+            //base32 encode secret
+            var encoder = new base32.Encoder({ type: "rfc4648" });
+            //map to data object
+            data.secret = encoder.write(decodedBuffer[0].secret).finalize();
+            data.username = decodedBuffer[0].name;
+            data.counter = decodedBuffer[0].counter;
+            data.issuer = decodedBuffer[0].issuer;
+            switch (decodedBuffer[0].type) {
+                case 0:
+                    data.type = "unspecified";
+                    break;
+                case 1:
+                    data.type = "hotp";
+                    break;
+                case 2:
+                    data.type = "totp";
+                    break;
+                default:
+                    data.type = "";
+            }
+            switch (decodedBuffer[0].digits) {
+                case 1:
+                    data.digits = 6;
+                    break;
+                case 2:
+                    data.digits = 8;
+                    break;
+                default:
+                    data.digits = 0;
+            }
+            data.isBase32 = true;
+        }
     } else {
         setPostQRCodeMessage('Error: invalid URI, protocol must be otpauth', 'err');
     }
