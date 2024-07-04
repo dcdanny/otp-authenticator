@@ -41,20 +41,24 @@
 				<p id="postQRCodeMessage" class="warn"></p>
 				<hr>
 				<label for="acctName">Account Name (for your reference)</label>
-				<input type="text" id="acctName" name="acctName" value="" size="20" required>
+				<label for="acctName" class="inputcontainer">
+					<input type="text" id="acctName" name="acctName" value="" size="20" required>
+				</label>
 				<p class="emphasis">Note: This must be unique; existing authenticators with an identical Account Name
 					will be overridden</p>
+				<br>
+				<label for="secret">Secret Key</label>
+				<label for="secret" class="inputcontainer">
+					<input type="text" id="secret" name="secret" value="" size="50"><br>
+				</label>
+				<label for="isBase32">Secret Key is base32 encoded</label>
+				<input type="checkbox" id="isBase32" name="isBase32"><br>
 				<br>
 				<span>OTP Algorithm to use</span><br>
 				<input type="radio" id="totp" name="type" value="totp" required>
 				<label for="totp">Time based (TOTP)</label><br>
 				<input type="radio" id="hotp" name="type" value="hotp">
 				<label for="hotp">HMAC Counter Based (HOTP)</label><br>
-				<br>
-				<label for="secret">Secret Key</label>
-				<input type="text" id="secret" name="secret" value="" size="50"><br>
-				<label for="isBase32">Secret Key is base32 encoded</label>
-				<input type="checkbox" id="isBase32" name="isBase32"><br>
 				<br>
 				<span>Output Key format</span><br>
 				<input type="radio" id="dec6" name="format" value="dec6" required>
