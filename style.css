@@ -74,6 +74,11 @@ button.manageAuthBtn {
     text-align: center;
 }
 
+.authString .msg,
+.msg {
+    color: #009900;
+}
+
 .authString .msg:before,
 .msg:before {
     content: "\00BB";
