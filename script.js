@@ -73,7 +73,7 @@ function generate() {
 function reloadCode(prop, thisEle) {
     dict[prop].count++;
     var reminder = document.createElement("div");
-    reminder.innerText = 'Remember: Update keys.js file with the new count value (' + (dict[prop].count + 1) + ')';
+    reminder.innerText = 'Reminder: Update the count value in your keys.js file (' + (dict[prop].count + 1) + ')';
     reminder.appendChild(document.createElement("br"));
     reminder.setAttribute("class", "title msg");
     var authElement = generateCodeElement(prop);
@@ -188,7 +188,7 @@ function generateCodeElement(prop) {
         authElement.appendChild(remainingTimeEle);
 
         let timeExpiredCallback = function() {
-            timeExpiredWarnEle.innerText = "Code expired. Use Reload All Codes button";
+            timeExpiredWarnEle.innerText = "Code expired";
             timeExpiredWarnEle.setAttribute("class", "title warn");
         }
         let intervalId = setTimeBar(remainingTimeEle, generatedCodeObj. secondsRemaining, 30, timeExpiredCallback);
