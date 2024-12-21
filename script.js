@@ -120,7 +120,7 @@ function generateCode(prop) {
                 }
                 otpObj = totpObj.getOTP(secret,otpLength);
                 if (otpObj.error) {
-                    return {"error":otpObj.error};
+                    return {"error": "totp: " + otpObj.error};
                 }
                 return {"otp":otpObj.otp,"format":dict[prop].format,"secondsRemaining":otpObj.secondsRemaining};
                 break;
@@ -132,7 +132,7 @@ function generateCode(prop) {
                     otp = hotp(secret, count, format);
                     return {"otp":otp,"format":format,"count":count};
                 } catch (error) {
-                    return {"error":error};
+                    return {"error": "hotp: " + error};
                 }
                 break;
             default:
@@ -140,7 +140,7 @@ function generateCode(prop) {
                 return {"error":"Err: Specify which of HOTP or TOTP should be used"};
         }
     } else {
-        otp = "Err: Secret not specified";
+        return {"error":"Err: Secret not provided"};
     }
 }
 
@@ -151,7 +151,7 @@ function generateCodeElement(prop) {
     let generatedCodeObj = generateCode(prop);
 
     if(generatedCodeObj.error) {
-        return generateMessage(generatedCodeObj.error, "err");
+        return generateMessage(generatedCodeObj.error + " for " + prop, "err");
     }
     // Add auth code display
     var codeEle = document.createElement("span");
@@ -279,7 +279,9 @@ function outputKeysJs() {
     const outputEle = document.getElementById('dictOutput');
     localStorage.setItem('dict', JSON.stringify(dict));
 
-    let keysjs = 'var dict = ' + JSON.stringify(((typeof dict == "undefined") ? {} : dict), null, "\t") + ";";
+    let keysjs = '// DO NOT SHARE the keys.js file! It contains your OTP secrets!\n'
+                + 'var dict = '
+                + JSON.stringify(((typeof dict == "undefined") ? {} : dict), null, "\t") + ";";
     outputEle.innerText = keysjs;
 }
 
